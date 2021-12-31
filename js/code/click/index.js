@@ -8,8 +8,8 @@ new MutationObserver(function() {
   attributes: true,
 });
 
-const onClick =() => {
-  console.log('click');
+function onClick() {
+  console.log('click', this, Date.now());
   
   setTimeout(() => {
     console.log('timeout');
@@ -27,6 +27,6 @@ const testFireClick = () => {
   inner.click();
 }
 
-inner.addEventListener('click', onClick);
 outer.addEventListener('click', onClick);
 clickBtn.addEventListener('click', testFireClick);
+inner.addEventListener('click', onClick);
