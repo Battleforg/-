@@ -5,7 +5,7 @@
 1. 单个入口（简写）语法
 entry: string | [string]。单入口语法是 entry: {main: string}的简写。
 
-2. 可以传递一个文件路径数组，[string]，这将创建一个所谓的 "multi-main entry"。在你想要一次注入多个依赖文件，并且将它们的依赖关系绘制在一个 "chunk" 中时，这种方式就很有用。
+2. 简写语法（以及对象语法）可以传递一个文件路径数组，[string]，这将创建一个所谓的 "multi-main entry"（对象语法就是多入口的入口）。在你想要一次注入多个依赖文件，并且将它们的依赖关系绘制在一个 "chunk" 中时，这种方式就很有用。
 
 3. 对象语法
 entry: { \<entryChunkName\> string | [string] } | {}
@@ -82,4 +82,32 @@ module.exports = {
 
 4. 对象语法的用途
 
-分离应用和第三方库入口，使得第三方库能打包成独立的chunk，让浏览器缓存；多页面应用程序，每个页面有一个入口
+分离应用和第三方库入口，使得第三方库能打包成独立的chunk，让浏览器缓存；多页面应用程序，每个页面有一个入口。Tip：根据经验，每个 HTML 文档只使用一个入口起点
+
+分离成多个入口时配合depenOn还可以做到代码分离和在多个chunk间共享模块：
+```js
+ const path = require('path');
+
+ module.exports = {
+   mode: 'development',
+   entry: {
+    index: {
+      import: './src/index.js',
+      dependOn: 'shared',
+    },
+    another: {
+      import: './src/another-module.js',
+      dependOn: 'shared',
+    },
+    shared: 'lodash',
+   },
+   output: {
+     filename: '[name].bundle.js',
+     path: path.resolve(__dirname, 'dist'),
+   },
+   /** 多入口  optimization: {
+    runtimeChunk: 'single',
+   },*/
+ };
+```
+如果我们要在一个 HTML 页面上使用多个入口时，还需设置最好再设置optimization.runtimeChunk: 'single'。尽管可以在 webpack 中允许每个页面使用多入口，应尽可能避免使用多入口的入口：entry: { page: ['./analytics', './app'] }。如此，在使用 async 脚本标签时，会有更好的优化以及一致的执行顺序。
