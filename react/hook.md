@@ -14,3 +14,44 @@ useEffect告诉React在渲染之后执行一些操作，React保存传入useEffe
 每次重新渲染，都会生成新的effect，替换掉之前旧的。
 
 effect中可以返回一个函数，作为可选的清除effect机制。React会在每次渲染的时候清除上一次effect，之后再执行新的effect。
+
+如果第二个参数传入了一个空数组（[]），effect 内部的 props 和 state 就会一直持有其初始值。
+
+## 自定义hook
+自定义 Hook 是一种重用状态逻辑的机制(例如设置为订阅并存储当前值)，所以每次使用自定义 Hook 时，其中的所有 state 和副作用都是完全隔离的。
+
+## useState
+```js 
+const [state, setState] = useState(initialState);
+```
+
+在初始渲染期间，返回的状态 (state) 与传入的第一个参数 (initialState) 值相同。setState 函数用于更新 state。它接收一个新的 state 值并将组件的一次重新渲染加入队列。在后续的重新渲染中，useState 返回的第一个值将始终是更新后最新的 state。
+
+**注意**
+
+React 会确保 setState 函数的标识是稳定的，并且不会在组件重新渲染时发生变化。这就是为什么可以安全地从 useEffect 或 useCallback 的依赖列表中省略 setState
+
+### 初始state
+initialState 参数只会在组件的初始渲染中起作用，后续渲染时会被忽略。如果初始 state 需要通过复杂计算获得，则可以传入一个函数，在函数中计算并返回初始的 state，此函数只在初始渲染时被调用：
+```js
+const [state, setState] = useState(() => {
+  const initialState = someExpensiveComputation(props);
+  return initialState;
+});
+
+```
+
+## useCallback
+```js
+const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b],
+);
+
+```
+
+返回一个 memoized 回调函数。
+
+把内联回调函数及依赖项数组作为参数传入 useCallback，它将返回该回调函数的 memoized 版本，该回调函数仅在某个依赖项改变时才会更新。当你把回调函数传递给经过优化的并使用引用相等性去避免非必要渲染（例如 shouldComponentUpdate）的子组件时，它将非常有用。
