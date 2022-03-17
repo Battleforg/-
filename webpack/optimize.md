@@ -23,9 +23,7 @@
 2. 动态导入，即import（），配合前端框架的懒加载教程使用
 3. webpack 4.6.0+的preload和prefetch指令，`import(/* webpackPrefetch: true */ './path/to/LoginModal.js');`
 
-
-
-## preload与prefetch的区别
+### preload与prefetch的区别
 与 prefetch 指令相比，preload 指令有许多不同之处：
 1. preload chunk 会在父 chunk 加载时，以并行方式开始加载。prefetch chunk 会在父 chunk 加载结束后开始加载。
 2. preload chunk 具有中等优先级，并立即下载。prefetch chunk 在浏览器闲置时下载。
