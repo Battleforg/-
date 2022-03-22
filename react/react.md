@@ -1,5 +1,33 @@
 # React
 
+
+## 合成事件
+
+SyntheticEvent 实例将被传递给你的事件处理函数，它是浏览器的原生事件的跨浏览器包装器。除兼容所有浏览器外，它还拥有和浏览器原生事件相同的接口，包括 stopPropagation() 和 preventDefault()。
+
+SyntheticEvent 是合并而来。这意味着 SyntheticEvent 对象可能会被重用，而且在事件回调函数被调用后，所有的属性都会无效。出于性能考虑，你不能通过异步访问事件。
+
+## Virtual DOM
+Virtual DOM是一种编程理念，通过状态生成一个虚拟的节点树，然后使用虚拟节点树进行渲染。渲染之前，会使用新生成的节点树和上一次生成的节点树进行比对，只渲染不同的部分。
+
+## setState
+setState() 将对组件 state 的更改排入队列。出于性能考虑，React可能会批量更新state，因而setState看起来像是异步的。React内部通过队列缓存了setState。
+
+需要使用最新的state和props时，应该使用setState()的updater参数。
+```js
+(state, props) => stateChange
+```
+
+例如：
+```js
+this.setState((state, props) => {
+  return {counter: state.counter + props.step};
+});
+```
+updater 函数中接收的 state 和 props 都保证为最新。updater 的返回值会与 state 进行浅合并。
+
+setState() 的第二个参数为可选的回调函数，它将在 setState 完成合并并重新渲染组件后执行。通常，我们建议使用 componentDidUpdate() 来代替此方式。
+
 ## React diff
 传统的diff算法效率低下，算法负责度达到O(n3)。React将Virtual DOM树转换成actual DOM树的最少操作的过程称为调和（reconciliation），diff算法是调和的具体实现。React通过大胆的假设，将O（n3）复杂度的问题转变为O（n）的问题。
 
@@ -37,7 +65,7 @@ diff对子元素列表的操作有三种：插入、移动、删除
 ### 受控组件vs非受控组件
 React 有两种不同的方式来处理表单输入。
 
-如果一个 input 表单元素的值是由 React 控制，就其称为受控组件。当用户将数据输入到受控组件时，会触发修改状态的事件处理器，这时由你的代码来决定此输入是否有效（如果有效就使用更新后的值重新渲染）。如果不重新渲染，则表单元素将保持不变。
+如果一个 input 表单元素的值是由 React 控制，就称其为受控组件。当用户将数据输入到受控组件时，会触发修改状态的事件处理器，这时由你的代码来决定此输入是否有效（如果有效就使用更新后的值重新渲染）。如果不重新渲染，则表单元素将保持不变。
 
 一个非受控组件，就像是运行在 React 体系之外的表单元素。当用户将数据输入到表单字段（例如 input，dropdown 等）时，React 不需要做任何事情就可以映射更新后的信息。然而，这也意味着，你无法强制给这个表单字段设置一个特定值。
 
