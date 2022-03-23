@@ -16,7 +16,7 @@
 ```<template>``` 元素中的所有内容都将会被传入相应的插槽。任何没有被包裹在带有 ```v-slot``` 的 ```<template>``` 中的内容都会被视为默认插槽的内容。也可以在一个```<template>```中包裹默认插槽的内容，用```v-slot:default```。
 
 ### 具名插槽的缩写
-```v-slot:```可以缩写成```#```, 例如：```v-slot:header```可以缩写成```#header```。特别注意默认插槽的缩写：```#default```。
+```v-slot:```可以缩写成```#```, 例如：```v-slot:header```可以缩写成```#header```。特别注意默认插槽的缩写：```#default```。因为v-bind和v-on的缩写都支持动态参数，猜测v-slot的缩写也可以用动态参数，```#[dynamicName]```。
 
 ## 插槽作用域
 首先，父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的。因此，父组件无法在插槽内访问子组件实例的数据。
@@ -25,6 +25,51 @@
 
 在不满足第一种情况时，使用插槽prop。
 ### 插槽prop
-如果必须在插槽内访问子组件中才有的数据，
+如果必须在插槽内访问子组件中才有的数据，需要使用插槽prop，也就是绑定在```<slot>```元素上的attribute，例如```v-bind:attribute="xxx"```。
 
+在父组件中，
+```html
+<current-user>
+  <template v-slot:default="slotProps">
+    {{ slotProps.user.firstName }}
+  </template>
+</current-user>
+```
+
+作用域插槽的内部工作原理是将你的插槽内容包裹在一个拥有单个参数的函数里，在单文件组件下，可以解构传入的插槽prop：
+```html
+<current-user v-slot="{ user: person = { firstName: 'Guest' } }">
+  {{ person.firstName }}
+</current-user>
+```
+
+### 独占默认插槽的缩写写法
+在组件只有默认插槽时，
+```html
+<current-user>
+  <template v-slot:default="slotProps">
+    {{ slotProps.user.firstName }}
+  </template>
+</current-user>
+```
+
+可以缩写为
+```html
+<current-user v-slot="slotProps">
+  {{ slotProps.user.firstName }}
+</current-user>
+```
+
+只要出现多个插槽，请始终为所有的插槽使用完整的基于 ```<template>``` 的语法.
+```html
+<current-user>
+  <template v-slot:default="slotProps">
+    {{ slotProps.user.firstName }}
+  </template>
+
+  <template v-slot:other="otherSlotProps">
+    ...
+  </template>
+</current-user>
+```
 

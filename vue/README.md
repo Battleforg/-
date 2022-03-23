@@ -2,6 +2,38 @@
 
 ## [event](./event.md)
 
+## [mixin](./mixin.md)
+
+## [v-model](./vmodel.md)
+
+## [v-slot](./slot.md)
+
+## keep alive和动态组件
+
+### 动态组件
+使用component标签渲染一个“元组件”。依```is```的值来决定哪个组件被渲染
+
+```html
+<!-- 组件会在 `currentTabComponent` 改变时改变 -->
+<component v-bind:is="currentTabComponent"></component>
+```
+```currentTabComponent``` 可以包括:
+1. 已注册组件的名字，或
+2. 一个组件的选项对象
+
+如果希望动态组件的实例能够在第一次创建后被缓存下来，可以用一个```<keep-alive>```将动态组件包裹起来。
+
+```html
+<!-- 失活的组件将会被缓存！-->
+<keep-alive>
+  <component v-bind:is="currentTabComponent"></component>
+</keep-alive>
+```
+
+**注意**
+
+keep-alive要求被切换的组件都有自己的名字，无论是通过组件的name选项还是局部/全局注册。
+
 ## vm.$watch
 
 ### 参数 expOrFn
@@ -31,7 +63,7 @@
 2. 删除节点，以vnode为标准，不存在的节点都是需要删除的节点
 3. 更新节点，vnode和oldVnode是同一个节点，需要进一步比对
 
-**注**  
+**注意**  
 
 这里的“同一个节点”，我的理解是同一个**类型**的节点，而且大部分属性都相同，也就个别属性，如子节点，文本等不同，所以需要逐一比对分析。
 
