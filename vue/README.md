@@ -1,5 +1,7 @@
 # Vue相关整理
 
+在架构设计上，Vue.js大体上可以分为三部分：核心代码、跨平台相关与公用工具函数。
+
 ## [event](./event.md)
 
 ## [mixin](./mixin.md)
@@ -56,6 +58,8 @@ keep-alive要求被切换的组件都有自己的名字，无论是通过组件�
 3. 是不是自身属性
 4. target是不是响应式数据
 
+vm.$watch、vm.$set、vm.$delete在导出Vue构造函数之前由stateMixin方法挂载到Vue原型上的。
+
 
 ## Vue patch
 在Vue里，patch可以理解为通过diff找出需要修改的DOM节点，然后渲染。修改DOM分为三种：
@@ -95,3 +99,45 @@ keep-alive要求被切换的组件都有自己的名字，无论是通过组件�
 1. 新前旧前、新后旧后位置不变，如果节点相同，只需更新节点
 2. 新后旧前、新前旧后都是更新节点加移动节点，移动位置以新为准，新后移到oldChildren所有未处理节点的后面，新前移动到oldChildren所有未处理节点的前面。也就是说，已更新过的节点都不用管，只需要在未更新的区别进行移动和更新。
 3. 如果子节点设置了key属性，可以通过key属性直接找到节点，也就无需使用上面的循环和优化。
+
+## 事件相关实例方法
+vm.$on、vm.$off、vm.$once、vm.$emit由eventsMixin方法挂载到Vue构造函数的原型上
+
+### vm.$on
+如果第一个参数传入的是字符串数组，则递归处理每一个事件，将其保存到vm._events的对象上，每个事件的回调用一个数组保存。
+
+vm._events对象是在Vue构造函数初始化Vue实例的时候由_init()方法创建。
+
+## 生命周期相关的实例方法
+相关方法有四个：
+1. 从lifeCycleMixin中挂载的vm.$forceUpdate和vm.$destory
+2. 从renderMixin中挂载的vm.$nextTick
+3. vm.$mount方法则是在跨平台的代码中挂载的
+
+### vm.$forceUpdate
+手动使Vue实例重新渲染，仅影响自身以及插入插槽内容的子组件，调用组件自身的watcher，也就是vm._watcher.update()。update方法会通知Vue实例重新渲染。
+
+### vm.$destroy
+要点
+1. 判断逻辑，防止重复执行销毁
+2. 调用callHook，触发beforeDestroy的钩子函数
+3. 清理当前实例和父组件之间的联系，也就是把自己从父组件实例的$children中删除
+4. 销毁组件上的所有watcher，包含自身的watcher，vm._watcher和vm.$watch设置的, vm._watchers（一个数组）。使用Watcher实例的teardown方法。
+5. 设置变量表明已经销毁实例，在vnode树上触发解绑指令，触发destroyed钩子。
+6. 移除所有事件监听器。
+
+## vm.$nextTick
+nextTick默认将回调添加到微任务中，特殊情况下才会降级为宏任务。
+
+由于nextTick内部维护一个回调函数列表，新添加的回调都会进入这个列表，因此需要注意回调的添加顺序决定执行顺序。由于更新DOM的回调也是通过nextTick添加到微任务中，更新DOM和其他通过nextTick添加的回调在同一个列表中，因此要在修改数据之后使用nextTick（微任务模式下）。使用宏任务的回调无需担心这个限制，因此默认条件下，宏任务回调会固定在微任务的DOM更新之后再执行。
+
+nextTick判断是否为第一次添加回调，是的话向任务队列添加一个缓冲函数。缓冲函数依次执行列表中的回调函数。
+
+在支持Promise的环境下，如果没有提供回调，nextTick返回一个Promise。实现上，在符合条件时返回一个Promise，在nextTick的回调列表添加一个函数，执行之后通过设置好的内部_resolve变量控制Promise变为resolved从而执行then里面的代码。
+
+### 降级为宏任务
+可以分为主动降级和自动降级。
+
+先说自动降级，在代码检测到不支持Promise的使用自动使用宏任务，使用宏任务之后，优先使用setImmediate，备选依次为MessageChannel，setTimeout。
+
+主动降级使用withMacroTask方法和标志变量useMacroTask。被withMacroTask包裹的方法在执行过程中会把nextTick设置成使用宏任务，如果期间nextTick发生第一次添加回调的情况，就会把缓冲函数添加到宏任务。在这之间的DOM更新和nextTick都会在宏任务中，之后重置为微任务模式。
