@@ -176,3 +176,54 @@ data选项必须是一个返回数据**对象**的**函数**。
 5. 缓存子类构造函数
 
 总体来讲，其实就是创建了一个Sub函数并继承了父级。如果直接使用Vue.extend，则Sub继承于Vue构造函数
+
+## 生命周期
+Vue实例的生命周期可以分为四个阶段：初始化阶段、模版编译阶段、挂载阶段、卸载阶段。
+
+初始化阶段从new Vue()到created钩子，主要是初始化一些属性、事件以及响应式数据。
+
+模版编译阶段从created钩子函数到beforeMount钩子函数，主要是将模版编译成渲染函数，只存在于完整版。运行时版本会跳过这个阶段，直接进入挂载阶段。
+
+挂载阶段从beforeMount到mounted，Vue实例将会被渲染到DOM元素，渲染过程中还会开始组件的Watcher来持续跟踪依赖的变化。当数据发生变化时，Watcher通知虚拟DOM重新渲染视图，渲染前触发beforeUpdate钩子，渲染完成后触发updated
+
+卸载阶段从调用vm.$destroy后开始，组件开始删除和父组件之间的联系，取消实例上的所有依赖的跟踪，移除所有事件监听器。
+
+## _init方法
+初始化阶段主要在这里完成，包括设置属性等以及触发beforeCreate和created。
+
+new Vue()之后：
+1. 执行初始化流程之间，在实例上挂载了$options属性。
+2. initLifecycle
+3. initEvents
+4. initRender
+5. 触发beforeCreate
+6. initInjections，在data/props之前初始化inject，让用户可以在data/props中使用inject注入的内容
+7. initState，依次初始化props、methods、data、computed、watch，这样做可以让后初始化的数据使用或观察先初始化的数据。
+8. initProvide，在data/props后初始化provide
+9. 触发created
+10. 如果实例化时提供了el选项，自动开始模版编译与挂载阶段，通过vm.$mount。如果没有，停在初始化阶段，等待用户手动进入下一阶段。
+
+## callHook
+Vue.js通过callHook函数触发生命周期钩子。
+
+用户设置的生命周期钩子通过options选项参数对象提供给Vue构造函数，经过合并之后赋值给```vm.$options[hookName]```。在合并options的过程中，所有同名的生命周期钩子会合并到一个数组，**混入对象的生命周期钩子先于自身的生命周期钩子调用**。
+
+所有生命周期钩子的函数名：
+1. beforeCreate
+2. created
+3. beforeMount
+4. mounted
+5. beforeUpdate
+6. updated
+7. beforeDestroy
+8. destroyed
+9. activated
+10. deactivated
+11. errorCaptured
+
+## errorCaptured与错误处理
+要点：
+1. 一个globalHandleError方法，在有配置全局的config.errorHanlder时将错误传递给全局处理，还能够处理自身的报错。最后不管错误来源，都会把错误打印到控制台。
+2. 通过组件的$parent，错误能够向上获取父组件，直至根组件。
+3. 在沿途获取的组件上调用errorCaptured钩子函数列表，如果某个钩子函数调用出错，新错误和原错误都会通过执行globalHandleError发送给全局错误处理。
+4. 如果errorCaptured的钩子函数返回false，那么错误将停止向上和向全局传递。
