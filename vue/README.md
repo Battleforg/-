@@ -203,7 +203,7 @@ new Vue()之后：
 9. 触发created
 10. 如果实例化时提供了el选项，自动开始模版编译与挂载阶段，通过vm.$mount。如果没有，停在初始化阶段，等待用户手动进入下一阶段。
 
-## callHook
+## 生命周期钩子里的callHook
 Vue.js通过callHook函数触发生命周期钩子。
 
 用户设置的生命周期钩子通过options选项参数对象提供给Vue构造函数，经过合并之后赋值给```vm.$options[hookName]```。在合并options的过程中，所有同名的生命周期钩子会合并到一个数组，**混入对象的生命周期钩子先于自身的生命周期钩子调用**。
@@ -227,3 +227,20 @@ Vue.js通过callHook函数触发生命周期钩子。
 2. 通过组件的$parent，错误能够向上获取父组件，直至根组件。
 3. 在沿途获取的组件上调用errorCaptured钩子函数列表，如果某个钩子函数调用出错，新错误和原错误都会通过执行globalHandleError发送给全局错误处理。
 4. 如果errorCaptured的钩子函数返回false，那么错误将停止向上和向全局传递。
+
+## 初始化methods
+循环选项中的methods对象，验证每个属性之后挂载到vm上。
+
+验证方法是否合法
+1. 是否只有key，没有value，没找到方法
+2. key（方法名）是否已经在props中声明过了
+3. key是否使用已经存在于vm，且以$或_开头
+
+## 初始化data
+1. 获取data对象，如果data是返回对象的函数，执行data函数，验证函数返回值确实是对象。如果data本身就是对象，直接获取。完整的过程还包含错误处理以及设置默认值。最后保证将要被设置到vm上的一定是一个对象。
+2. 验证data对象属性的key，非生产环境判断是否与methods有重名属性。判断是否与props有重名属性。如果data和methods有重名属性，依然会将data的这个属性设置到vm上，如果与props发生了重复，则不会设置到vm上。
+
+### proxy方法原理
+用于实现代理功能。三个参数target sourceKey key。
+
+初始化了一个带setter和getter的属性配置对象，将对target.key的读写转换到target.sourceKey.key上。例如，操作vm.x也就是操作vm._data.x
