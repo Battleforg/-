@@ -193,18 +193,18 @@ Vue实例的生命周期可以分为四个阶段：初始化阶段、模版编�
 
 new Vue()之后：
 1. 执行初始化流程之间，在实例上挂载了$options属性。
-2. initLifecycle
+2. initLifecycle，初始化一些内部属性
 3. initEvents
 4. initRender
-5. 触发beforeCreate
+5. 触发beforeCreate钩子
 6. initInjections，在data/props之前初始化inject，让用户可以在data/props中使用inject注入的内容
 7. initState，依次初始化props、methods、data、computed、watch，这样做可以让后初始化的数据使用或观察先初始化的数据。
 8. initProvide，在data/props后初始化provide
-9. 触发created
+9. 触发created钩子
 10. 如果实例化时提供了el选项，自动开始模版编译与挂载阶段，通过vm.$mount。如果没有，停在初始化阶段，等待用户手动进入下一阶段。
 
 ## 生命周期钩子里的callHook
-Vue.js通过callHook函数触发生命周期钩子。
+Vue.js通过callHook函数触发生命周期钩子。callHook只需从```vm.$options[hookName]```中获取钩子列表，依次执行回调。
 
 用户设置的生命周期钩子通过options选项参数对象提供给Vue构造函数，经过合并之后赋值给```vm.$options[hookName]```。在合并options的过程中，所有同名的生命周期钩子会合并到一个数组，**混入对象的生命周期钩子先于自身的生命周期钩子调用**。
 
@@ -244,3 +244,31 @@ Vue.js通过callHook函数触发生命周期钩子。
 用于实现代理功能。三个参数target sourceKey key。
 
 初始化了一个带setter和getter的属性配置对象，将对target.key的读写转换到target.sourceKey.key上。例如，操作vm.x也就是操作vm._data.x
+
+## v-on指令
+使用v-on指令可以绑定事件监听器。
+
+用在组件时，可以监听自定义组件触发的事件。在组件的初始化事件阶段，初始化了vm._events对象，所有使用vm.$on注册的事件都保存在这里。更新组件的事件先规格化事件名，也就是处理事件修饰符，如capture、once和passive。然后通过比对新旧事件列表，找出新事件、不需要的事件和需要更新回调的事件。
+
+普通DOM元素的事件绑定相关逻辑，在规格化和比对更新事件的逻辑和绑定组件事件是类似的。不同的地方在于，绑定在DOM元素上的事件的添加和删除操作使用的是原生的addEventListener和removeEventListener。
+
+虚拟DOM在patch的过程中，每当一个DOM元素的创建和更新时，都会触发事件绑定相关的处理逻辑。
+
+## 自定义指令
+1. 虚拟DOM在patch中会触发不同钩子函数，跟自定义指令处理相关的有create、update和destory
+2. 指令的处理逻辑监听了这些事件，回调最后都会触发在编写自定义指令时定义的bind、inserted、update、componentUpdated与unbind钩子。
+3. 指令处理方法比对新旧指令列表，也就是oldDirs和newDirs，决定调用bind钩子还是update钩子。
+4. 对于已经绑定过的指令，也就是oldDir中有的指令，执行update钩子，如果设置了componentUpdated，update之后还会调用componentUpdated。
+5. 对于新指令，先触发bind，之后如果设置了inserted，还会触发inserted。
+6. 发现不需要的指令时，解绑指令，触发unbind
+
+自定义指令这里触发钩子函数也有一个callHook方法，只是和组件那里的callHook方法有相似的作用，也就是触发钩子函数。但是这两个callHook的参数和原理不一样。
+
+本处的callHook先从指令对象中取出对应的钩子函数，如果钩子函数存在，执行函数，同时处理可能发生的错误
+
+## 过滤器
+在Vue中可以定义过滤器函数，然后在模版里用 ``` | ``` “管道”符号指示。模版编译的时候会把过滤器编译成使用``` | ```前的表达式为第一个参数，调用过滤器函数并对结果生成字符串的操作。
+
+过滤器可以串联。
+
+过滤器使用时也可以传递参数，作为第二以及之后的参数。第一个参数永远是之前操作链的结果
