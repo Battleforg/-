@@ -1,5 +1,7 @@
 # v-model
 
+## [README](./README.md)
+
 v-model 在内部为不同的输入元素使用不同的 property 并抛出不同的事件：
 
 1. text 和 textarea 元素使用 value property 和 input 事件；
