@@ -1,5 +1,7 @@
 # DOM事件流 vs 调用HTMLElement.click方法 在触发事件回调的区别
 
+## [总集](../README.md)
+
 [来源：Jake Archibald - Tasks, microtasks, and schedules](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)
 
 本来是在研究事件循环的，偶然发现了一位Chrome老哥写的关于任务和微任务的文章，看了一下，稍微明白了一点任务队列和微任务队列之间的关系
