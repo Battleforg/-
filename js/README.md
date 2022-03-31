@@ -55,7 +55,21 @@ Person.prototype.__proto__.__proto__ === null; // true
 
 每次通过构造函数创建的实例，内部[[Prototype]]指针会被赋值为构造函数的原型对象。代码中可以通过非标准的__proto__属性访问实例对象的原型。
 
-构造函数、构造函数的原型对象和实例是三个完全不同的对象。构造函数通过prototype属性链接到原型对象，实例对象通过__proto__链接到原型对象。实例与构造函数没有直接联系，与原型对象有直接联系。
+构造函数、构造函数的原型对象和实例是三个完全不同的对象。
+
+```js
+let person1 = new Person();
+person1 !== Person; // true
+person1 !== Person.prototype; // true
+Person.prototype !== Person; // trues
+```
+
+构造函数通过prototype属性链接到原型对象，实例对象通过__proto__链接到原型对象。实例与构造函数没有直接联系，与原型对象有直接联系。
+
+```js
+person1.__proto__ === Person.prototype; // true
+person1.__proto__.constructor === Person; // ture
+```
 
 ### instanceof
 instanceof检查实例的原型链中是否包含指定构造函数的原型。
@@ -167,4 +181,52 @@ function inheritPrototype(subType, superType) {
 继承父类实例属性还是通过盗用构造函数。这样既只调用了一次父类构造函数，用来添加实例属性。而通过寄生式继承获得在父类原型上共享的属性和方法，同时子类原型上也没有不必要的属性，并且原型链仍然正常作用于instanceof操作符和isPrototype()。
 
 ## 类
+
+### 类的构成
+类可以包含构造函数、实例成员、访问器、原型方法、静态成员，但都不是必须的。
+
+类定义中的代码默认都在严格模式下执行。类中的方法（包括实例方法和原型方法）中的this默认为实例，但是如果取出来单独使用，由于类内部为严格模式，实际为undefined。解决办法：一个是在构造函数内绑定this，另一个是在构造函数中用箭头函数定义方法。
+
+### 类的定义
+类的定义不存在提升，类表达式和函数表达式一样，不能提升，类声明和函数声明不一样，函数声明会提升，类声明不会。
+
+类声明受块作用域限制，函数声明受函数作用域限制。
+
+### 类构造函数
+调用类构造函数必须用new。实例化后变为普通的实例方法，可以在实例上通过constructor属性引用它，但还是需要使用new调用。
+
+类本身具有与普通构造函数一样的行为，在类的上下文中，类本身在使用new调用时就会被当作构造函数。
+
+```js
+class Person {}
+
+let p1 = new Person();
+
+p1.constructor === Person; // true
+p1 instanceof Person; // true
+p1 instanceof Person.constructor; // false
+
+```
+其实说明类构造函数与其他类方法（也就是原型方法）一样是定义在原型上的，这一点跟普通构造函数保持一致。 ``` Person.prototype.constructor === Person ```。
+
+类也可以像函数或其他对象一样作为参数被引用，说明类本质上就是一种特殊函数，也可以立即实例化。
+
+### 静态成员
+静态成员在类定义中使用```static```关键字作为前缀，this引用类自身，实际是定义在类上。
+
+## 类的继承
+类不仅可以继承类，也可以继承普通构造函数。
+
+派生类通过原型链访问到类和原型上的方法。this的值会反映调用相应方法的实例或者类。
+
+### super关键字
+只能在派生类中使用，也就是必须要用extends继承一个类。
+
+在构造函数中，super() 相当于 super.constructor()，this只能在super()调用之后使用。
+
+在静态方法中，可以通过super调用继承的类上的静态方法。
+
+### new.target
+new.target保存通过new关键字调用的类或函数，可以通过```new.target === Person```的形式实现抽象基类的效果。
+
 
