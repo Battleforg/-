@@ -8,3 +8,41 @@ module.rules中允许对一种文件指定多个loader。当一种文件需要�
 ## 使用方式
 1. 配置方式（推荐）
 2. 內联方式
+
+## 配置方式
+```js
+module.exports = {
+  module: {
+    rules: [
+      { test: /\.css$/, use: 'css-loader' },
+      { test: /\.ts$/, use: 'ts-loader' },
+    ],
+  },
+};
+```
+
+```js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          // [style-loader](/loaders/style-loader)
+          { loader: 'style-loader' },
+          // [css-loader](/loaders/css-loader)
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true
+            }
+          },
+          // [sass-loader](/loaders/sass-loader)
+          { loader: 'sass-loader' }
+        ]
+      }
+    ]
+  }
+};
+
+```

@@ -41,7 +41,7 @@ keep-alive要求被切换的组件都有自己的名字，无论是通过组件�
 ### 参数 expOrFn
 当expOrFn为函数时，Watcher不仅可以动态返回数据，还能观察expOrFn函数中使用的所有Vue.js实例上的响应式数据。原理上是通过expOrFn使用响应式数据时触发数据的getter。
 
-由于Watcher中添加了teardown用来取消观察，getter触发时调用Dep实例的depend()首先调用当前Watcher实例的addDep。addDep在将Dep实例添加到Watcher实例的订阅列表后将Watcher实例添加到Dep实例的watcher列表中。这个过程中Dep实例和Watcher实例互相往对方的方法中传入this，也就是指向自己的引用。
+由于Watcher中添加了teardown用来取消观察，getter触发时调用Dep实例的depend()，depend()调用当前Watcher实例的addDep()。addDep()在将Dep实例添加到Watcher实例的订阅列表后将Watcher实例添加到Dep实例的watcher列表中。这个过程中Dep实例和Watcher实例互相往对方的方法中传入this，也就是指向自己的引用。
 
 ## vm.$set
 用来在响应式数据上设置一个属性，能够确保属性被创建后也是响应式的，并且触发视图更新。这个方法主要用来避开Vue.js不能侦测属性被添加的限制。
@@ -122,7 +122,7 @@ vm._events对象是在Vue构造函数初始化Vue实例的时候由_init()方法
 1. 判断逻辑，防止重复执行销毁
 2. 调用callHook，触发beforeDestroy的钩子函数
 3. 清理当前实例和父组件之间的联系，也就是把自己从父组件实例的$children中删除
-4. 销毁组件上的所有watcher，包含自身的watcher，vm._watcher和vm.$watch设置的, vm._watchers（一个数组）。使用Watcher实例的teardown方法。
+4. 销毁组件上的所有watcher，包含自身的vm._watcher和vm.$watch设置的vm._watchers（一个数组）。使用Watcher实例的teardown方法。
 5. 设置变量表明已经销毁实例，在vnode树上触发解绑指令，触发destroyed钩子。
 6. 移除所有事件监听器。
 
@@ -133,9 +133,9 @@ nextTick默认将回调添加到微任务中，特殊情况下才会降级为宏
 
 由于nextTick内部维护一个回调函数列表，新添加的回调都会进入这个列表，因此需要注意回调的添加顺序决定执行顺序。由于更新DOM的回调也是通过nextTick添加到微任务中，更新DOM和其他通过nextTick添加的回调在同一个列表中，因此要在修改数据之后使用nextTick（微任务模式下）。使用宏任务的回调无需担心这个限制，因此默认条件下，宏任务回调会固定在微任务的DOM更新之后再执行。
 
-nextTick判断是否为第一次添加回调，是的话向任务队列添加一个缓冲函数。缓冲函数依次执行列表中的回调函数。
+nextTick判断是否为第一次添加回调，是的话向任务队列添加一个缓冲函数。缓冲函数在能够执行的时候依次执行列表中的回调函数。
 
-在支持Promise的环境下，如果没有提供回调，nextTick返回一个Promise。实现上，在符合条件时返回一个Promise，在nextTick的回调列表添加一个函数，执行之后通过设置好的内部_resolve变量控制Promise变为resolved从而执行then里面的代码。
+在支持Promise的环境下，如果没有提供回调，nextTick返回一个Promise。实现上，在nextTick的回调列表添加一个函数，执行之后通过设置好的内部_resolve变量控制Promise变为resolved从而执行then里面的代码。最后返回这个设置好的Promise实例。
 
 ---
 
@@ -144,7 +144,7 @@ nextTick判断是否为第一次添加回调，是的话向任务队列添加一
 
 先说自动降级，在代码检测到不支持Promise的使用自动使用宏任务，使用宏任务之后，优先使用setImmediate，备选依次为MessageChannel，setTimeout。
 
-主动降级使用withMacroTask方法和标志变量useMacroTask。被withMacroTask包裹的方法在执行过程中会把nextTick设置成使用宏任务，如果期间nextTick发生第一次添加回调的情况，就会把缓冲函数添加到宏任务。在这之间的DOM更新和nextTick都会在宏任务中，之后重置为微任务模式。
+主动降级使用withMacroTask方法和标志变量useMacroTask。被withMacroTask包裹的方法在执行过程中会把nextTick设置成使用宏任务，如果期间nextTick发生第一次添加回调的情况，就会把缓冲函数添加到宏任务。在被包裹的方法执行期间的DOM更新和nextTick都使用宏任务中，被包裹的方法执行结束后重置为微任务模式。
 
 
 ## vm.$mount
@@ -168,6 +168,7 @@ nextTick判断是否为第一次添加回调，是的话向任务队列添加一
 全局API是挂载到Vue构造函数上，这些方法的this是Vue构造函数本身
 ### Vue.extend
 data选项必须是一个返回数据**对象**的**函数**。
+
 要点：
 1. 使用缓存策略，反复调用Vue.extend应该返回同一个结果。
 2. 检查name选项
@@ -223,10 +224,9 @@ Vue.js通过callHook函数触发生命周期钩子。callHook只需从```vm.$opt
 
 ## errorCaptured与错误处理
 要点：
-1. 一个globalHandleError方法，在有配置全局的config.errorHanlder时将错误传递给全局处理，还能够处理自身的报错。最后不管错误来源，都会把错误打印到控制台。
-2. 通过组件的$parent，错误能够向上获取父组件，直至根组件。
-3. 在沿途获取的组件上调用errorCaptured钩子函数列表，如果某个钩子函数调用出错，新错误和原错误都会通过执行globalHandleError发送给全局错误处理。
-4. 如果errorCaptured的钩子函数返回false，那么错误将停止向上和向全局传递。
+1. 一个globalHandleError方法，在有配置全局的config.errorHanlder时将错误传递给全局处理，还能够处理自身抛出的错误。最后不管错误来源，都会把错误打印到控制台。
+2. 通过组件的$parent，能够向上获取父组件，并调用父组件的，直至根组件。在沿途获取的组件上调用errorCaptured钩子函数列表，如果某个钩子函数调用出错，新错误和原错误都会通过执行globalHandleError发送给全局错误处理。
+3. 如果errorCaptured的钩子函数返回false，那么错误将停止向上和向全局传递。
 
 ## 初始化methods
 循环选项中的methods对象，验证每个属性之后挂载到vm上。
@@ -235,6 +235,8 @@ Vue.js通过callHook函数触发生命周期钩子。callHook只需从```vm.$opt
 1. 是否只有key，没有value，没找到方法
 2. key（方法名）是否已经在props中声明过了
 3. key是否使用已经存在于vm，且以$或_开头
+
+验证失败的方法在非生产环境会在控制台打印警告信息，不管验证结果都会挂载方法。
 
 ## 初始化data
 1. 获取data对象，如果data是返回对象的函数，执行data函数，验证函数返回值确实是对象。如果data本身就是对象，直接获取。完整的过程还包含错误处理以及设置默认值。最后保证将要被设置到vm上的一定是一个对象。

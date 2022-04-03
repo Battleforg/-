@@ -39,3 +39,30 @@ Vue.js为v-on指令提供了事件修饰符。
 
 总结：
 .self.prevent只会阻止事件在元素自身时的默认行为。从下层冒泡来事件不会受到影响，默认行为和事件回调都会触发。.prevent.self阻止在自身和子元素上的事件默认行为。[vue3.0文档改动](https://github.com/vuejs/docs/pull/1425/files)终于修改了这个之前看了几百遍都看不懂的tip。改完之后就比较符合实际表现了。个人理解，.prevent.self的prevent首先生效，阻止默认行为，影响自身和子元素，之后.self正常作用，只在事件从自身触发时才触发回调。
+
+## 使用事件抛出一个值
+
+vm.$emit(eventName, [...args]) 触发当前实例上的事件。
+
+参数：eventName:String，事件名。args，附加参数，会传给监听器回调。
+
+当在父级组件用v-on监听这个事件的时候，我们可以在监听器回调的字符串表达式中通过```$event```访问到被抛出的附加参数：
+
+```html
+v-on:input="searchText = $event"
+```
+或者，如果这个事件处理函数是一个方法，这个值将会作为第一个参数传入这个方法：
+```html
+v-on:input="someMethod"
+```
+
+```js
+new Vue({
+  el: '#emit-example-argument',
+  methods: {
+    someMethod: function (paramerters) {
+      alert(paramerters)
+    }
+  }
+})
+```

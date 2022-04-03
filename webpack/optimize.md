@@ -7,8 +7,8 @@
 3. 每个额外的 loader/plugin 都有其启动时间。尽量少地使用工具。
 4. 减小项目代码体积，使用体积更小的library，移除未引用代码
 5. 使用thread-loader
-6. 在webpack配置中使用cache选项
-7. 开发环境可以用webpack-dev-server，通过在内存中编译来提高性能，同时避免使用生产环境才会用到的工具
+6. 开发环境可以用webpack-dev-server，通过在内存中编译来提高性能，同时避免使用生产环境才会用到的工具
+7. 在webpack配置中使用cache选项
 
 ## 分析打包
 [参考资料](https://juejin.cn/post/6844904071736852487)
@@ -24,7 +24,6 @@
 3. webpack 4.6.0+的preload和prefetch指令，`import(/* webpackPrefetch: true */ './path/to/LoginModal.js');`
 
 ### preload与prefetch的区别
-与 prefetch 指令相比，preload 指令有许多不同之处：
 1. preload chunk 会在父 chunk 加载时，以并行方式开始加载。prefetch chunk 会在父 chunk 加载结束后开始加载。
 2. preload chunk 具有中等优先级，并立即下载。prefetch chunk 在浏览器闲置时下载。
 3. preload chunk 会在父 chunk 中立即请求，用于当下时刻。prefetch chunk 会用于未来的某个时刻。
