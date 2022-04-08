@@ -25,7 +25,7 @@
 1. 让浮动内容和周围的内容等高
 2. 创建新的BFC避免两个相邻```<div>```之间的外边距合并问题
 
-## flex布局
+## [flex布局](flex.md)
 
 ## 浮动
 css的float属性可以是这些值：left、right、none、inline-start、inline-end。除了none表示元素不进行浮动外，设置为其他值都会导致元素浮动。
