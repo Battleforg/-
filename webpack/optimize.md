@@ -12,8 +12,11 @@
 
 ## 分析打包
 [参考资料](https://juejin.cn/post/6844904071736852487)
+
 通过speed-measure-webpack-plugin 测量你的 webpack 构建期间各个阶段花费的时间。
+
 [bundle分析](https://webpack.docschina.org/guides/code-splitting/#bundle-analysis)
+
 有一些官方分析工具和社区工具
 
 ## 代码分离

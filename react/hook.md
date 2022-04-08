@@ -9,7 +9,7 @@ Hook就是JavaScript函数，使用中有两个额外规则：
 ## useEffect与生命周期方法
 可以把 useEffect Hook 看做 componentDidMount，componentDidUpdate 和 componentWillUnmount 这三个函数的组合。
 
-useEffect告诉React在渲染之后执行一些操作，React保存传入useEffect的函数，并在执行DOM更新之后调用它。将useEffect放在函数组件内部让effect内部可以通过JavaScript的闭包机制来获取state和props。useEffect默认在每次渲染完成之后都会执行，无论是第一次渲染还是每次更新之后。可以通过设置依赖数组（useEffect的第二个参数）来告诉React改变默认行为。React保证了每次运行effect的同时，DOM都已经更新完毕。
+useEffect告诉React在渲染之后执行一些操作，React保存传入useEffect的函数，并在执行DOM更新之后调用它。将useEffect放在函数组件内部让effect内部可以通过JavaScript的闭包机制来获取state和props。useEffect**默认在每次渲染完成之后都会执行**，无论是第一次渲染还是每次更新之后。可以通过设置依赖数组（useEffect的第二个参数）来告诉React改变默认行为。React保证了每次运行effect的同时，DOM都已经更新完毕。
 
 每次重新渲染，都会生成新的effect，替换掉之前旧的。
 

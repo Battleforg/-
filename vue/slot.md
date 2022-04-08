@@ -13,7 +13,7 @@
 
 在向具名插槽提供内容时，需要使用```<template>```元素并设置v-slot:，可以用固定字符串```v-slot:name```表示插槽的名称，例如```v-slot:header```；还可以用动态name，```v-slot:[dynamicSlotName]```。
 
-```<template>``` 元素中的所有内容都将会被传入相应的插槽。任何没有被包裹在带有 ```v-slot``` 的 ```<template>``` 中的内容都会被视为默认插槽的内容。也可以在一个```<template>```中包裹默认插槽的内容，用```v-slot:default```。
+```<template>``` 元素中的所有内容都将会被传入对应的插槽。任何没有被包裹在带有 ```v-slot``` 的 ```<template>``` 中的内容都会被视为默认插槽的内容。也可以在一个```<template>```中包裹默认插槽的内容，用```v-slot:default```。
 
 ### 具名插槽的缩写
 ```v-slot:```可以缩写成```#```, 例如：```v-slot:header```可以缩写成```#header```。特别注意默认插槽的缩写：```#default```。因为v-bind和v-on的缩写都支持动态参数，猜测v-slot的缩写也可以用动态参数，```#[dynamicName]```。
