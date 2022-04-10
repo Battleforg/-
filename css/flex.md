@@ -99,7 +99,7 @@ flex-direction指定了内部元素是如何在 flex 容器中布局的，定义
 
 请注意，值 row 和 row-reverse 受 flex 容器的方向性的影响。 如果它的 dir 属性是 ltr，row 表示从左到右定向的水平轴，而 row-reverse 表示从右到左; 如果 dir 属性是 rtl，row 表示从右到左定向的轴，而 row-reverse 表示从左到右。
 
-配合wrap-direction可以改变折行的方向。
+```flex-wrap: wrap```允许子元素折行，配合wrap-direction可以改变折行的方向。
 
 给弹性项设置max-width，可以限制可伸缩的范围。
 

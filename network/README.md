@@ -278,7 +278,7 @@ TCP的拥塞控制遵循以下原则：
 **拥塞避免**
 1. 进入拥塞避免后，cwnd每个RTT增加一个单位。
 2. 如果发生超时，设置ssthresh（慢启动阈值）为cwnd/2，设置，cwnd重置为1并进入慢启动。
-3. 如何检测到三个冗余ACK，记录ssthresh为cwnd的一半，更新cwnd为ssthresh（旧ssthresh的一半）加上3个单位，进入快速恢复
+3. 如何检测到三个冗余ACK，记录ssthresh为cwnd的一半，更新cwnd为ssthresh（旧cwnd的一半）加上3个单位，进入快速恢复
 
 **快速恢复**
 1. 对于每个冗余的ACK，cwnd增加一个单位。

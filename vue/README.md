@@ -63,9 +63,9 @@ vm.$watch、vm.$set、vm.$delete在导出Vue构造函数之前由stateMixin方�
 
 ## Vue patch
 在Vue里，patch可以理解为通过diff找出需要修改的DOM节点，然后渲染。修改DOM分为三种：
-1. 新增节点，发生在第一次渲染以及vnode和oldVnode完全不是同一个节点时
-2. 删除节点，以vnode为标准，不存在的节点都是需要删除的节点
-3. 更新节点，vnode和oldVnode是同一个节点，需要进一步比对
+1. **新增节点**，发生在第一次渲染以及vnode和oldVnode完全不是同一个节点时
+2. **删除节点**，以vnode为标准，不存在的节点都是需要删除的节点
+3. **更新节点**，vnode和oldVnode是同一个节点，需要进一步比对
 
 **注意**  
 
@@ -142,7 +142,7 @@ nextTick判断是否为第一次添加回调，是的话向任务队列添加一
 ### 降级为宏任务
 可以分为主动降级和自动降级。
 
-先说自动降级，在代码检测到不支持Promise的使用自动使用宏任务，使用宏任务之后，优先使用setImmediate，备选依次为MessageChannel，setTimeout。
+先说自动降级，在代码检测到不支持Promise的使用自动使用宏任务，使用宏任务之后，优先使用setImmediate（部分浏览器不支持），备选依次为MessageChannel，setTimeout。
 
 主动降级使用withMacroTask方法和标志变量useMacroTask。被withMacroTask包裹的方法在执行过程中会把nextTick设置成使用宏任务，如果期间nextTick发生第一次添加回调的情况，就会把缓冲函数添加到宏任务。在被包裹的方法执行期间的DOM更新和nextTick都使用宏任务中，被包裹的方法执行结束后重置为微任务模式。
 
@@ -225,7 +225,7 @@ Vue.js通过callHook函数触发生命周期钩子。callHook只需从```vm.$opt
 ## errorCaptured与错误处理
 要点：
 1. 一个globalHandleError方法，在有配置全局的config.errorHanlder时将错误传递给全局处理，还能够处理自身抛出的错误。最后不管错误来源，都会把错误打印到控制台。
-2. 通过组件的$parent，能够向上获取父组件，并调用父组件的，直至根组件。在沿途获取的组件上调用errorCaptured钩子函数列表，如果某个钩子函数调用出错，新错误和原错误都会通过执行globalHandleError发送给全局错误处理。
+2. 通过组件的$parent，能够向上获取父组件的引用，直至根组件。在沿途获取的组件上调用errorCaptured钩子函数列表，如果某个钩子函数调用出错，新错误和原错误都会通过执行globalHandleError发送给全局错误处理。
 3. 如果errorCaptured的钩子函数返回false，那么错误将停止向上和向全局传递。
 
 ## 初始化methods
@@ -243,7 +243,7 @@ Vue.js通过callHook函数触发生命周期钩子。callHook只需从```vm.$opt
 2. 验证data对象属性的key，非生产环境判断是否与methods有重名属性。判断是否与props有重名属性。如果data和methods有重名属性，依然会将data的这个属性设置到vm上，如果与props发生了重复，则不会设置到vm上。
 
 ### proxy方法原理
-用于实现代理功能。三个参数target sourceKey key。
+用于实现代理功能。三个参数target、sourceKey、key。
 
 初始化了一个带setter和getter的属性配置对象，将对target.key的读写转换到target.sourceKey.key上。例如，操作vm.x也就是操作vm._data.x
 

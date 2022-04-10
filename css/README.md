@@ -1,12 +1,5 @@
 # CSS
 
-## 横向滚动条
-要点：
-1. 设置内容宽度，width
-2. white-space: nowrap防止折行
-3. overflow-y: hidden, 不让出现垂直滚动条
-4. ::-webkit-scrollbar可以设置滚动条样式，display：none，去掉滚动条
-
 ## BFC（块级格式化上下文）
 [参考](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
 
@@ -29,8 +22,8 @@
 
 ## CSS优先级
 稍微复杂的样式表中可能存在两条甚至多条规则同时选择一个元素的情况。CSS通过一种叫做层叠（cascade）的机制来解决这种冲突。层叠机制的原理是为规则赋予不同的重要性：
-1. 标注为!important的用户（浏览器用户）样式
-2. 标注为!important的作者（网站作者）样式
+1. 标注为```!important```的用户（浏览器用户）样式
+2. 标注为```!important```的作者（网站作者）样式
 3. 作者样式
 4. 用户样式
 5. 浏览器（或用户代理）的默认样式
@@ -71,9 +64,9 @@ css的float属性可以是这些值：left、right、none、inline-start、inlin
 }
 ```
 
-更好的方式是使用```:after```伪元素：
+更好的方式是使用```::after```伪元素：
 ```css
-.media-block:after {
+.media-block::after {
   content: " ";
   display: block"
   clear: both;
@@ -116,6 +109,13 @@ B.使用额外元素加css画三角，在DOM中
 堆叠上下文由特定属性和值创建，比如任何设置了position: absolute及值不是auto的z-index属性的元素，都会创建一个自己后代元素的堆叠上下文。
 
 设置小于1的opacity值也可以触发新的堆叠上下文
+
+## 横向滚动条
+要点：
+1. 设置内容宽度，width
+2. white-space: nowrap防止折行
+3. overflow-y: hidden, 不让出现垂直滚动条
+4. ::-webkit-scrollbar可以设置滚动条样式，display：none，去掉滚动条
 
 ## 参考书
 《精通CSS：高级Web标准解决方案》
