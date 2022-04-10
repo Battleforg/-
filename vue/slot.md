@@ -11,7 +11,7 @@
 ## 具名插槽
 如果有多个插槽，需要为```<slot>```元素设置name属性。只能有一个插槽不带name属性，这个插槽会被视name属性为“default”。
 
-在向具名插槽提供内容时，需要使用```<template>```元素并设置v-slot:，可以用固定字符串```v-slot:name```表示插槽的名称，例如```v-slot:header```；还可以用动态name，```v-slot:[dynamicSlotName]```。
+在向具名插槽提供内容时，需要使用```<template>```元素并设置```v-slot:```，可以用固定字符串```v-slot:name```表示插槽的名称，例如```v-slot:header```；还可以用动态name，```v-slot:[dynamicSlotName]```。
 
 ```<template>``` 元素中的所有内容都将会被传入对应的插槽。任何没有被包裹在带有 ```v-slot``` 的 ```<template>``` 中的内容都会被视为默认插槽的内容。也可以在一个```<template>```中包裹默认插槽的内容，用```v-slot:default```。
 
