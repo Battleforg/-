@@ -10,6 +10,26 @@
 
 ## [v-slot](./slot.md)
 
+## 数据绑定原理
+Vue的数据绑定需要先将数据转换成响应式的，然后通过响应式数据的getter收集依赖，然后在数据更新的时候通过setter通知依赖，依赖再通知使用响应式数据的地方（模版，用户watcher、计算属性）。
+
+### Watcher类
+Watcher代表了Vue中的依赖，也就是数据发送变化后通知谁。Watcher是一个中介的角色，数据发生变化时先通知它，它再通知其他地方（例如通知模版重新渲染）。
+
+### Dep类
+Dep类专门用来管理依赖，它可以收集依赖、删除依赖和向依赖发送通知。每个属性对应一个Dep实例。
+
+Dep类有个属性uid，用来唯一标识一个Dep实例，通过uid，Watcher能够知道自己订阅了哪些Dep。这样只有第一次使用getter的时候Watcher才会订阅Dep，而Dep也不会因为重复添加Watcher而重复通知Watcher。另一个作用是在Watcher需要销毁的时候，Watcher能够知道需要通知哪些Dep将自己从通知列表中删除。
+
+通过uid，Dep和Watcher就变成了多对多的关系。
+
+### defineReactive
+在Vue2.0中封装了Object.defineProperty来为数据对象添加响应性，也就是利用对象的访问器语法，先在getter中收集依赖，再在setter中触发依赖。
+
+### Observer
+在这个类中把一个数据属性转换成响应式的，区分基本类型、对象和数组。
+
+
 ## keep alive和动态组件
 
 ### 动态组件
@@ -41,7 +61,7 @@ keep-alive要求被切换的组件都有自己的名字，无论是通过组件�
 ### 参数 expOrFn
 当expOrFn为函数时，Watcher不仅可以动态返回数据，还能观察expOrFn函数中使用的所有Vue.js实例上的响应式数据。原理上是通过expOrFn使用响应式数据时触发数据的getter。
 
-由于Watcher中添加了teardown用来取消观察，getter触发时调用Dep实例的depend()，depend()调用当前Watcher实例的addDep()。addDep()在将Dep实例添加到Watcher实例的订阅列表后将Watcher实例添加到Dep实例的watcher列表中。这个过程中Dep实例和Watcher实例互相往对方的方法中传入this，也就是指向自己的引用。
+由于Watcher中添加了teardown用来取消观察，getter触发时调用Dep实例的depend()，depend()调用当前Watcher实例的addDep()。然后当前Watcher实例把这个Dep实例加入自己的订阅列表，最后再调用Dep实例的addSub把自己（也就是当前Watcher实例）加到Dep实例的通知列表中。这个过程中Dep实例和Watcher实例互相往对方的方法中传入this，也就是指向自己的引用。
 
 ## vm.$set
 用来在响应式数据上设置一个属性，能够确保属性被创建后也是响应式的，并且触发视图更新。这个方法主要用来避开Vue.js不能侦测属性被添加的限制。
@@ -246,6 +266,13 @@ Vue.js通过callHook函数触发生命周期钩子。callHook只需从```vm.$opt
 用于实现代理功能。三个参数target、sourceKey、key。
 
 初始化了一个带setter和getter的属性配置对象，将对target.key的读写转换到target.sourceKey.key上。例如，操作vm.x也就是操作vm._data.x
+
+## 初始化computed
+xxxxx
+
+## 初始化watch
+xxxxxxx
+
 
 ## v-on指令
 使用v-on指令可以绑定事件监听器。
