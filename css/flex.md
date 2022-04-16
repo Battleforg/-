@@ -24,7 +24,7 @@ Flexbox可以针对页面中的某一区域，控制其中元素的顺序、大�
 
 如果指定某一项一侧的外边距值为auto，而且在容器里那一侧还有空间，那么该外边距就会扩展占据可用空间。
 
-控制辅轴对齐的属性是align-items，其默认值是stretch，其他还有flex-start、center、flex-end。
+以主轴是水平时为例，如果Flex容器的高度高于Flex项的高度，或者某一Flex项的高度大于其他项时，会产生辅轴方向上的对齐问题。控制辅轴对齐的属性是align-items，其默认值是stretch，其他还有flex-start、center、flex-end。
 
 辅轴上对齐个别项用align-self。
 
@@ -117,3 +117,5 @@ align-content（默认值是stretch）对容器中多行的作用，与justify-c
 
 ## 参考书
 《精通CSS：高级Web标准解决方案》
+
+## [回到总结](README.md)
