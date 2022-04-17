@@ -4,6 +4,11 @@
 
 ## [函数](./function.md)
 
+## 数据类型
+基本类型（原始类型）：Undefined、Null、Boolean、Number、String、Symbol、(BigInt)
+
+引用类型：Object、Array、Function
+
 ## 作用域
 **《JavaScript高级程序设计》第四版**
 
