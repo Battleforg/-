@@ -225,9 +225,167 @@ button:hover {
 }
 ```
 
+### 传递参数给混入
+可以在定义时给混入设置参数，和函数类似。同时还可以给参数设置默认值
+
+```less
+.border-radius(@radius) {
+  -webkit-border-radius: @radius;
+     -moz-border-radius: @radius;
+          border-radius: @radius;
+}
+
+#header {
+  .border-radius(4px);
+}
+
+```
+默认值
+```less
+.border-radius(@radius: 5px) {
+  -webkit-border-radius: @radius;
+     -moz-border-radius: @radius;
+          border-radius: @radius;
+}
+
+.button {
+  .border-radius();
+}
+```
+
+如[不输出混入](#不输出混入)所说，定义混入时没有使用参数可以隐藏混入的规则集。
+
+如果传入多个参数时，参数间最好用```;```分隔。
+
+**注意**：```,```既可以用来分隔参数，还可以用来表示一个css属性列表：```red, blue```。
+
+和函数调用不一样的地方是，混入传参数可以用参数名直接对应，而不用遵循特定的参数顺序，例如：
+```less
+.mixin(@color: black; @margin: 10px; @padding: 20px) {
+  color: @color;
+  margin: @margin;
+  padding: @padding;
+}
+.class1 {
+  .mixin(@margin: 20px; @color: #33acfe);
+}
+.class2 {
+  .mixin(#efca44; @padding: 40px);
+}
+```
+编译为：
+```css
+.class1 {
+  color: #33acfe;
+  margin: 20px;
+  padding: 20px;
+}
+.class2 {
+  color: #efca44;
+  margin: 10px;
+  padding: 40px;
+}
+```
+注意这个例子中class1的参数顺序。另外class2的第一个参数没有使用参数名，导致按照参数顺序赋值。
+
+### !important
+引入一个混入时加上```!important```会让编译后的相关属性都带上```!important```。
+
+```less
+.foo (@bg: #f5f5f5, @color: #900) {
+  background: @bg;
+  color: @color;
+}
+.unimportant {
+  .foo();
+}
+.important {
+  .foo() !important;
+}
+```
+编译为：
+```css
+.unimportant {
+  background: #f5f5f5;
+  color: #900;
+}
+.important {
+  background: #f5f5f5 !important;
+  color: #900 !important;
+}
+```
+
 ## 嵌套（Nesting）
+在less中使用嵌套代替层叠或与层叠结合使用的能力
+
+```less
+#header {
+  color: black;
+  .navigation {
+    font-size: 12px;
+  }
+  .logo {
+    width: 300px;
+  }
+}
+```
+编译为：
+```css
+#header {
+  color: black;
+}
+#header .navigation {
+  font-size: 12px;
+}
+#header .logo {
+  width: 300px;
+}
+```
+
+@规则（@media和@support）可以与选择器以相同的方式进行嵌套。@规则会被放在前面，同一规则集中的其他元素的相对顺序保持不变。这叫做冒泡
+
+```less
+.component {
+  width: 300px;
+  @media (min-width: 768px) {
+    width: 600px;
+    @media  (min-resolution: 192dpi) {
+      background-image: url(/img/retina2x.png);
+    }
+  }
+  @media (min-width: 1280px) {
+    width: 800px;
+  }
+}
+```
+
+编译为：
+```css
+.component {
+  width: 300px;
+}
+@media (min-width: 768px) {
+  .component {
+    width: 600px;
+  }
+}
+@media (min-width: 768px) and (min-resolution: 192dpi) {
+  .component {
+    background-image: url(/img/retina2x.png);
+  }
+}
+@media (min-width: 1280px) {
+  .component {
+    width: 800px;
+  }
+}
+```
 
 ## 运算（Operation）
+
+如果可能的话，算数运算符在加、减或比较之前会进行单位换算。计算的结果以最左侧操作数的单位为准。如果单位换算无效或失去意义，则忽略单位。无效的单位换算：px到cm或rad到%
+
+乘除法不作转换，以最左侧操作数的单位为准。
 
 
 ## 参考资料
