@@ -2,6 +2,10 @@
 
 ## [类型](type.md)
 
+## [缩小类型范围](narrowing.md)
+
+## [函数进阶](function.md)
+
 
 
 
