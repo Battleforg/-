@@ -29,7 +29,7 @@ function f1(a: any) {
 }
 function f2(a: unknown) {
   a.b();
-Object is of type 'unknown'.
+  // Object is of type 'unknown'.
 }
 ```
 

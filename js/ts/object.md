@@ -1,7 +1,5 @@
 # 对象进阶
 
-[README](README.md)
-
 ## 可选属性
 在定义对象属性的时候，可以用```?:```表示一个属性可选，需要在实现中处理属性为```undefined```的情况。
 
@@ -75,3 +73,5 @@ type OneOrManyOrNullStrings = OneOrManyOrNull<string>; // type OneOrManyOrNullSt
 和用readonly标注只读属性一样，可以用ReadonlyArray标注只读数组，一样的，这只是TypeScript层面用来提示数组是不可修改的，并没有一个构造函数叫ReadonlyArray。
 
 ```readonly Type[]```是```ReadonlyArray<Type>```的缩写
+
+[返回](type.md#对象)

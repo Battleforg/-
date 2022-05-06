@@ -1,7 +1,5 @@
 # TypeScript函数进阶
 
-[README](README.md)
-
 ## 函数类型表达式
 最简单的描述函数类型的方式是函数类型表达式，看起来就像箭头函数：
 
@@ -80,3 +78,5 @@ const f3 = function (): void {
   return true;
 };
 ```
+
+[返回](type.md#函数)

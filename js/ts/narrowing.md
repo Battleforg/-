@@ -68,7 +68,7 @@ function getArea(shape: Shape) {
       return shape.sideLength ** 2;
     default:
       const _exhaustiveCheck: never = shape;
-Type 'Triangle' is not assignable to type 'never'.
+      // Type 'Triangle' is not assignable to type 'never'.
       return _exhaustiveCheck;
   }
 }
