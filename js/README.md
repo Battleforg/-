@@ -116,7 +116,7 @@ instanceof检查实例的原型链中是否包含指定构造函数的原型。
 function _new(/* 构造函数 */ constructor, /* 构造函数参数 */ ...params) {
   // 创建一个空对象，继承构造函数的prototype属性
   const context = Object.create(constructor.prototype);
-  // 执行构造函数
+  // 以刚创建的对象为this执行构造函数
   const result = constructor.apply(context, params);
   // 如果返回结果是对象，就直接返回，否则返回context对象
   return (typeof result === 'Object' && result !== null) ? result : context;
@@ -161,6 +161,31 @@ function _new(/* 构造函数 */ constructor, /* 构造函数参数 */ ...params
 
 ### 组合继承
 组合继承综合了原型链和盗用构造函数。基本思路是使用原型链继承原型上的属性和方法，而通过盗用构造函数来继承实例属性。组合继承保留了instanceof操作符和isPrototypeOf()方法识别合成对象的能力。
+
+```js
+function SuperType(name) {
+  this.name = name;
+  this.color = ["red", "blue", "green"];
+}
+
+SuperType.prototype.sayName = function() {
+  console.log(this.name);
+}
+
+function SubType(name, age) {
+  // 继承属性
+  SuperType.call(this, name);
+  this.age = age;
+}
+
+// 继承方法
+SubType.prototype = new SuperType();
+
+SubType.prototype.sayAge = function() {
+  console.log(this.age);
+}
+
+```
 
 ### 原型式继承
 即使不自定义类型也可以通过原型实现对象之间的信息共享。具体做法是，创建一个临时构造函数，将传入的对象赋值给这个构造函数的原型，然后返回这个临时类型的实例。核心是通过原型链获得其他对象的信息，不关心构造函数和类型。
