@@ -95,7 +95,7 @@ flex: flex-grow flex-shrink flex-basis
 2. 确定实际的主尺寸。如果按照假想的主尺寸把各项排布好之后，容器内还有剩余空间，那么它们可以伸展。伸展多少由flex-grow系数决定。相应地，如果容器装不下那么多项，则根据flex-shrink系数决定各项如何收缩。
 
 ## Flexbox布局
-flex-direction指定了内部元素是如何在 flex 容器中布局的，定义了主轴的方向（正方向或反方向）。
+flex-direction指定了内部元素是如何在 flex 容器中布局的，定义了主轴的方向（正方向或反方向）。flex-direction属性的取值有：```row```、```row-reverse```、```col```、```col-reverse```。
 
 请注意，值 row 和 row-reverse 受 flex 容器的方向性的影响。 如果它的 dir 属性是 ltr，row 表示从左到右定向的水平轴，而 row-reverse 表示从右到左; 如果 dir 属性是 rtl，row 表示从右到左定向的轴，而 row-reverse 表示从左到右。
 
