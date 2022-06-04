@@ -28,6 +28,9 @@ arr5.flat();
 ```
 
 ## reduce + concat展开一层
+
+Array.prototype.concat接受数组或值作为参数，将其和原数组合并到一个新数组中。
+
 ```js
 const arr = [1, 2, [3, 4]];
 

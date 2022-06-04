@@ -22,7 +22,7 @@ a:hover {
 }
 ```
 
-less经过编译可以变成css：
+less经过编译可以变成css
 
 less：
 ```less
@@ -46,7 +46,7 @@ less：
 ### 变量作为插值
 变量除了可以作为css属性的值被使用，还可以在选择器名、URL、import和属性名中作为插值使用。
 
-选择器：
+选择器名：
 ```less
 // Variables
 @my-selector: banner;
