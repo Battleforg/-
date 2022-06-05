@@ -24,7 +24,7 @@ Dep类有个属性uid，用来唯一标识一个Dep实例，通过uid，Watcher�
 通过uid，Dep和Watcher就变成了多对多的关系。
 
 ### defineReactive
-在Vue2.0中封装了Object.defineProperty来为数据对象添加响应性，也就是利用对象的访问器语法，先在getter中收集依赖，再在setter中触发依赖。
+在Vue2.0中用defineReactive封装了Object.defineProperty来为数据对象添加响应性，也就是利用对象的访问器语法，先在getter中收集依赖，再在setter中触发依赖。
 
 ### Observer
 在这个类中把一个数据属性转换成响应式的，区分基本类型、对象和数组。

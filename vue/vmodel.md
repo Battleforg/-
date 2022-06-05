@@ -37,7 +37,7 @@ v-model 在内部为不同的输入元素使用不同的 property 并抛出不�
 ></custom-input>
 ```
 
-想这样做，需要组件：
+想这样做，需要组件```custom-input```满足：
 1. 接收名为“value”的prop
 2. 将组件内的一个```<input>```元素的 value attribute 绑定到一个名叫 value 的 prop 上
 3. 在```<input>```元素的 input 事件被触发时，将新的值通过**自定义**的 input 事件抛出

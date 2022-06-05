@@ -25,9 +25,9 @@
 
 在不满足第一种情况时，使用插槽prop。
 ### 插槽prop
-如果必须在插槽内访问子组件中才有的数据，需要使用插槽prop，也就是绑定在```<slot>```元素上的attribute，例如```v-bind:attribute="xxx"```。
+如果必须在插槽内访问子组件中才有的数据，需要使用插槽prop，也就是绑定在```<slot>```元素上的attribute，例如```v-bind:attribute="xxx"```。然后在父组件中，
 
-在父组件中，
+
 ```html
 <current-user>
   <template v-slot:default="slotProps">
