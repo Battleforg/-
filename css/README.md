@@ -14,7 +14,7 @@
 ### 盒子大小
 默认情况下，元素盒子的width和height属性指的是**内容盒子**，也就是元素可渲染内容区的宽度和高度。这时候添加边框和内边距不会影响**内容盒子**的大小，但会导致**整个**元素盒子变大。
 
-通过修改```box-sizing```属性可以改变计算盒子大小的方式。```box-sizing```的默认值为content-box，也就是内容盒子。如果把值修改为border-box，那么width和height属性的值将会包含内边距和边框。
+通过修改```box-sizing```属性可以改变计算盒子大小的方式。```box-sizing```的默认值为**content-box**，也就是内容盒子。如果把值修改为**border-box**，那么width和height属性的值将会包含内边距和边框。
 
 内边距和外边距的值可以是CSS规范中规定的任意长度单位（px、em或百分比）。其中，使用百分比长度，基于的是包含块（通常是父元素）的宽度来计算，这里同样包括在上、下方位的内、外边距使用百分比的情况。
 
@@ -30,7 +30,7 @@
 
 举例一些可以创建块级格式化上下文的方式：
 1. 根元素```<html>```
-2. 浮动元素，也就是元素的float不是none
+2. 浮动元素，也就是元素的float不是none，即为left、right等
 3. 绝对定位元素，元素的position为absolute或fixed
 4. overflow属性不为visible，即为auto、scroll、hidden
 5. 弹性元素（display为flex或inline-flex元素的直接子元素）
