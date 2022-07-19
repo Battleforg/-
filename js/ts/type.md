@@ -163,7 +163,7 @@ const constantString = "Hello World";
 // constantString的类型为：const constantString: "Hello String"
 ```
 
-比较有价值的用途在函数声明中，通过将参数声明或返回值为字面量类型，可以确保输入输出为制定类型：
+比较有价值的用途在函数声明中，通过将参数声明或返回值为字面量类型，可以确保输入输出为指定类型：
 
 ```ts
 function printText(s: string, alignment: "left" | "right" | "center") {
