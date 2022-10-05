@@ -5,7 +5,7 @@
 ## [函数](./function.md)
 
 ## 数据类型
-基本类型（原始类型）：Undefined、Null、Boolean、Number、String、Symbol、(BigInt)
+基本类型（原始类型）：**Boolean**、**Number**、**String**、Undefined、Null、Symbol、(BigInt)
 
 引用类型：Object、Array、Function
 
